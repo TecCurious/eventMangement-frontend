@@ -89,7 +89,7 @@ const EmailVerification: React.FC = () => {
       }
     } catch (error) {
       router.push("/auth/login");
-      toast.error("Error fetching user data");
+      toast.error((error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -154,7 +154,7 @@ const EmailVerification: React.FC = () => {
           }
         );
 
-        const data = await response.json();
+        // const data = await response.json();
 
         if (response.ok) {
           toast.success("Email verified successfully!");
@@ -163,7 +163,7 @@ const EmailVerification: React.FC = () => {
           toast.error("Verification failed");
         }
       } catch (error) {
-        toast.error("Error during verification");
+        toast.error((error as Error).message);
       }
     } else {
       console.log(enteredOtp);
@@ -197,7 +197,7 @@ const EmailVerification: React.FC = () => {
           {[0, 1, 2, 3].map((index) => (
             <input
               key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
+              ref={(el) => {inputRefs.current[index] = el}}
               type="text"
               maxLength={1}
               value={otp[index]}

@@ -23,15 +23,16 @@ export default function Register() {
           }
         );
   
-        const data = await response.json();
+        // const data = await response.json();
   
         if (response.ok) {
           router.push("/dashboard");
         }
-      } catch (error) {
-       
-        
       } 
+       
+      catch (error) {
+        console.log("An error occurred", error);
+      }
     };
   
 

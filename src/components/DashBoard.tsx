@@ -1,5 +1,5 @@
 "use client"
-import React, { use, useEffect } from "react";
+import React, {  useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -45,6 +45,8 @@ const Dashboard = () => {
         
       }
     } catch (error) {
+      console.log(error);
+
       router.push("/auth/login");
       
     } finally {

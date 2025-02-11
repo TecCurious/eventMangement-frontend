@@ -125,7 +125,7 @@ export const LoginForm = () => {
           
           {/* Registration Prompt */}
           <div className="mt-6 text-center space-y-2 border-t border-indigo-100 pt-6">
-            <p className="text-gray-600">Don't have an account?</p>
+            <p className="text-gray-600">Dont have an account?</p>
             <Link
               href="/auth/register"
               className="block text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-200"

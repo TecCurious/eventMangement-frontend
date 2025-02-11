@@ -83,7 +83,7 @@ export const RegistrationForm = () => {
       }
       
     } catch (error) {
-      toast.error("Registration failed");
+      toast.error((error as Error).message);
     } finally {
       setIsLoading(false);
     }
