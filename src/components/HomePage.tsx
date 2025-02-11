@@ -26,7 +26,7 @@ const HomePage = () => {
             </p>
             <div className="mt-6 sm:mt-8 md:mt-10">
               <Link 
-                href="/register" 
+                href="/auth/register" 
                 className="inline-flex items-center px-6 sm:px-8 py-2.5 sm:py-3 border border-transparent text-sm sm:text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
               >
                 Get Started

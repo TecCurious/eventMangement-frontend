@@ -8,8 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { useRouter } from "next/navigation";
+import { useState } from 'react';
 
-// Define the form schema using Zod
 const formSchema = z.object({
   email: z.string().email({
     message: 'Please enter a valid email address.',
@@ -20,7 +20,7 @@ const formSchema = z.object({
 });
 
 export const LoginForm = () => {
-
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -30,8 +30,8 @@ export const LoginForm = () => {
     },
   });
 
-  // Handle form submission
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
     try {
       if (!process.env.NEXT_PUBLIC_API_URL) {
         throw new Error('API URL not configured');
@@ -46,14 +46,12 @@ export const LoginForm = () => {
       const data = await response.json();
   
       if (!response.ok && data.error == "Invalid credentials") {
-        // throw new Error(data.error || 'Login failed');
         toast.error("Invalid credentials");
         return;
       }
 
       localStorage.setItem('token', data.token);
       form.reset();
-
 
       if(data.user.emailVerified == false){
         toast("Please verify your email");
@@ -67,11 +65,14 @@ export const LoginForm = () => {
     } catch (error) {
       console.error('Login error:', error);
       toast.error(error instanceof Error ? error.message : 'An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
     <div className="w-full max-w-md p-8 space-y-8 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg border border-indigo-100">
-      <h2 className="text-2xl font-bold text-center text-indigo-700">Welcome Back</h2>
+      <h2 className="text-2xl font-bold text-center text-black">Welcome Back</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
          
@@ -93,7 +94,6 @@ export const LoginForm = () => {
             )}
           />
 
-   
           <FormField
             control={form.control}
             name="password"
@@ -113,17 +113,16 @@ export const LoginForm = () => {
             )}
           />
 
-          
           <div className="pt-2">
             <Button
               type="submit"
+              disabled={isLoading}
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              Login
+              {isLoading ? "Logging in..." : "Login"}
             </Button>
           </div>
           
-          {/* Registration Prompt */}
           <div className="mt-6 text-center space-y-2 border-t border-indigo-100 pt-6">
             <p className="text-gray-600">Dont have an account?</p>
             <Link
@@ -138,3 +137,5 @@ export const LoginForm = () => {
     </div>
   );
 };
+
+export default LoginForm;

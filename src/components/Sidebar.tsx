@@ -16,7 +16,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const menuItems = [
     { icon: LayoutDashboard, text: 'Dashboard', href: '/dashboard' },
     { icon: Calendar, text: 'Create Event', href: '/dashboard/create-event' },
-    { icon: CalendarCheck, text: 'My Events', href: '/my-events' },
+    { icon: CalendarCheck, text: 'My Events', href: '/dashboard/my-events' },
   ];
 
   const handleLinkClick = () => {
