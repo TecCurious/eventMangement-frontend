@@ -4,16 +4,14 @@ import Link from 'next/link';
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+ 
 
   useEffect(() => {
     const checkAuth = async () => {
-      setIsLoading(true);
       const token = localStorage.getItem("token");
       
       if (!token) {
         setIsAuthenticated(false);
-        setIsLoading(false);
         return;
       }
 
@@ -41,7 +39,6 @@ export const Navbar = () => {
         setIsAuthenticated(false);
         localStorage.removeItem("token");
       } finally {
-        setIsLoading(false);
       }
     };
 
@@ -52,17 +49,7 @@ export const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  if (isLoading) {
-    return <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex-shrink-0 flex items-center">
-            Loading...
-          </div>
-        </div>
-      </div>
-    </nav>;
-  }
+ 
 
   return (
     <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
