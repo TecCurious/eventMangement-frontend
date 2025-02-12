@@ -91,10 +91,13 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     }}
                     className="w-full px-4 py-2 text-left text-gray-600 hover:bg-indigo-50 flex items-center gap-2"
                   >
-                    <div className='flex items-center gap-2' onClick={handleLogout}>
-                      <LogOut size={16} />
+                    
+                      <button className='flex items-center gap-2' onClick={handleLogout}>
+                      <LogOut  size={16} />
                       Logout
-                    </div>
+                      </button>
+                     
+                   
                   </button>
                 </div>
               )}
@@ -131,7 +134,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <div className="border-t pt-4">
             <div className="flex items-center space-x-3 px-4 py-3 text-gray-600">
               <Mail size={20} />
-              <span className="text-sm">user@example.com</span>
+              {/* <span className="text-sm">user@example.com</span> */}
             </div>
           </div>
         </nav>

@@ -1,59 +1,75 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserData();  
-  }, []);
-
-   const fetchUserData = async () => {
+    const checkAuth = async () => {
+      setIsLoading(true);
       const token = localStorage.getItem("token");
+      
+      if (!token) {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`, // Include the token in the header
+              Authorization: `Bearer ${token}`,
             },
           }
         );
-  
+    
         const data = await response.json();
-        console.log(data);
-  
-        if (response.ok) {
-          if (data.emailVerified) {
-            setIsAuthenticated(true);
-            
-            return;
-          }
-          
-         
+    
+        if (response.ok && data.emailVerified) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          localStorage.removeItem("token"); // Clear invalid token
         }
-        
       } catch (error) {
-        console.log(error);
-        
-      } 
-        
-      
+        console.error("Auth check failed:", error);
+        setIsAuthenticated(false);
+        localStorage.removeItem("token");
+      } finally {
+        setIsLoading(false);
+      }
     };
+
+    checkAuth();
+  }, []); // Run once on mount
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  return (
-    <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
+  if (isLoading) {
+    return <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          {/* Logo */}
+          <div className="flex-shrink-0 flex items-center">
+            Loading...
+          </div>
+        </div>
+      </div>
+    </nav>;
+  }
+
+  return (
+    <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
+      {/* Rest of your existing nav markup... */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          {/* Logo section remains the same */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/">
               <div className="text-xl font-bold text-indigo-600 flex items-center">
@@ -75,37 +91,30 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation with conditional rendering */}
           <div className="hidden md:flex md:items-center md:space-x-4">
             <Link href="/">
-              <div className="text-gray-600 hover:text-indigo-600  px-3 py-2 rounded-md text-md  font-bold transition-colors duration-200">
+              <div className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-md font-bold">
                 Home
               </div>
             </Link>
             <Link href="/events">
-              <div className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-ms font-bold transition-colors duration-200">
+              <div className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-md font-bold">
                 Events
               </div>
             </Link>
-            <Link href="/about">
-              <div className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-md font-bold transition-colors duration-200">
-                About
-              </div>
-            </Link>
-            <Link href="/auth/register">
-              <div className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200">
-                Get Started
+            <Link href={isAuthenticated ? "/dashboard" : "/auth/register"}>
+              <div className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                {isAuthenticated ? "Dashboard" : "Get Started"}
               </div>
             </Link>
           </div>
 
-          {/* Hamburger Menu Button */}
+          {/* Mobile menu button */}
           <div className="flex items-center md:hidden">
             <button
               onClick={toggleMenu}
-              type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-100 focus:outline-none transition-colors duration-200"
-              aria-expanded="false"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-100 focus:outline-none"
             >
               <span className="sr-only">Open main menu</span>
               <svg
@@ -135,28 +144,23 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
         <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
           <Link href="/">
-            <div className="block text-gray-600 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">
+            <div className="block text-gray-600 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium">
               Home
             </div>
           </Link>
           <Link href="/events">
-            <div className="block text-gray-600 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">
+            <div className="block text-gray-600 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium">
               Events
             </div>
           </Link>
-          <Link href="/about">
-            <div className="block text-gray-600 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">
-              About
-            </div>
-          </Link>
           <div className="px-3 py-2">
-            <Link href={`${isAuthenticated ? "/dashboard": '"auth/register"'}`}>
-              <div className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200">
-               {isAuthenticated ? "Dashboard" : "Get Started" }
+            <Link href={isAuthenticated ? "/dashboard" : "/auth/register"}>
+              <div className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                {isAuthenticated ? "Dashboard" : "Get Started"}
               </div>
             </Link>
           </div>
