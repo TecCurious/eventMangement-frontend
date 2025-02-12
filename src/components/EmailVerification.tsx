@@ -102,7 +102,7 @@ const EmailVerification: React.FC = () => {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Auto-focus next input
+
     if (value && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -158,7 +158,10 @@ const EmailVerification: React.FC = () => {
 
         if (response.ok) {
           toast.success("Email verified successfully!");
-          router.push(`/dashboard`);
+         setTimeout(() => {
+          router.push("/dashboard");
+         }, 2000);
+          
         } else {
           toast.error("Verification failed");
         }

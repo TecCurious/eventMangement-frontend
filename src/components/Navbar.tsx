@@ -1,8 +1,44 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import { set } from 'date-fns';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+   const fetchUserData = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the token in the header
+            },
+          }
+        );
+  
+        const data = await response.json();
+        console.log(data);
+  
+        if (response.ok) {
+          if (data.emailVerified) {
+            setIsAuthenticated(true);
+            
+            return;
+          }
+          
+         
+        }
+        
+      } catch (error) {
+        console.log(error);
+        
+      } 
+        
+      
+    };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -34,7 +70,7 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-4">
             <Link href="/">
               <div className="text-gray-600 hover:text-indigo-600  px-3 py-2 rounded-md text-md  font-bold transition-colors duration-200">
@@ -113,9 +149,9 @@ export const Navbar = () => {
             </div>
           </Link>
           <div className="px-3 py-2">
-            <Link href="/auth/register">
+            <Link href={`${isAuthenticated ? "/dashboard": '"auth/register"'}`}>
               <div className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200">
-                Get Started
+               {isAuthenticated ? "Dashboard" : "Get Started" }
               </div>
             </Link>
           </div>
