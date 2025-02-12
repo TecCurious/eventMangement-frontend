@@ -32,6 +32,7 @@ const EventsPage: React.FC = () => {
         if (!response.ok) {
         //   throw new Error('Failed to fetch events');
         router.push("/auth/login");
+        return;
         }
 
         const data = await response.json();

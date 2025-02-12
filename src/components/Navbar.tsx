@@ -85,11 +85,11 @@ export const Navbar = () => {
                 Home
               </div>
             </Link>
-            <Link href="/events">
+           {isAuthenticated && <Link href="/events">
               <div className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-md font-bold">
                 Events
               </div>
-            </Link>
+            </Link>}
             <Link href={isAuthenticated ? "/dashboard" : "/auth/register"}>
               <div className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                 {isAuthenticated ? "Dashboard" : "Get Started"}
