@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { set } from 'date-fns';
+
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
+  useEffect(() => {
+    fetchUserData();  
+  }, []);
 
    const fetchUserData = async () => {
       const token = localStorage.getItem("token");
